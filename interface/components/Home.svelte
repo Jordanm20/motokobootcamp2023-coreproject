@@ -5,7 +5,7 @@
 <div>
   <header class="App-header">
     <img src={logo} class="App-logo" alt="logo" />
-    <p class="slogan">Motoko Bootcamp Dao</p>
+    <p class="slogan">Motoko Bootcamp 2023 Dao</p>
     <p class="twitter">← Open me!</p>
   </header>
 </div>

@@ -30,27 +30,17 @@ actor {
         alreadyVoted : [Principal];
     };
 
-    stable var stableproposals : [(Nat, Proposal)] = [];
+    stable var spropo : [(Nat, Proposal)] = [];
     let proposals = HashMap.fromIter<Nat, Proposal>(
-        stableproposals.vals(), 10, Nat.equal, Hash.hash
+        spropo.vals(), 10, Nat.equal, Hash.hash
     );
-
-
-    // 
-    public shared query (msg) func whoami(t : Text) : async Text {
-        Principal.toText(msg.caller) # "" # t;
-    };
-
-
-    func arrayContainsPrincipal(a : [Principal], p : Principal) : Bool {
+   
+    func array(a : [Principal], p : Principal) : Bool {
         for (e in a.vals()) {
             if (e == p) {return true};
         };
         return false;
     };
-
-
-   
     public shared({caller}) func submit_proposal(this_payload : Text) : async {#Ok : StaticProposal; #Err : Text} {
         let nextId = proposals.size() + 1;
         switch (proposals.get(nextId)) {
@@ -102,7 +92,7 @@ actor {
             return #Err("Number of Motoko Bootcamp Tokens must be greater than 1 to vote")
         };
 
-        if (arrayContainsPrincipal(proposal.alreadyVoted, caller) == true) {
+        if (array(proposal.alreadyVoted, caller) == true) {
             return #Err("No puede votar 2 veces en una misma propuesta");
         };
 
@@ -159,9 +149,9 @@ actor {
         });
     };
     system func preupgrade() {
-        stableproposals := Iter.toArray(proposals.entries());
+        spropo := Iter.toArray(proposals.entries());
     };
     system func postupgrade() {
-        stableproposals := [];
+        spropo := [];
     };
 };

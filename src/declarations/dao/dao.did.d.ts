@@ -23,5 +23,4 @@ export interface _SERVICE {
     { 'Ok' : [bigint, bigint] } |
       { 'Err' : string }
   >,
-  'whoami' : ActorMethod<[string], string>,
 }

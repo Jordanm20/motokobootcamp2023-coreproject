@@ -27,7 +27,7 @@
 
   <footer>
     <p class="twitterfoot">
-      by <a>Student: Jordan Miranda</a>
+    <a>Student: Jordan Miranda</a>
     </p>
   </footer>
 </div>
@@ -52,13 +52,27 @@
   }
 
   button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
     font-weight: 600;
     color: black;
-    border-radius: 3px;
-    border-color: black;
+    border-radius: 8px;
+    border: 1px solid #91C9FF;
+    outline: none;
+    transition: 1s ease-in-out;
     background: -moz-linear-gradient(white,gray,white);
     background: -webkit-linear-gradient(white,gray,white);
   }
+
+  button:hover {
+  transition: 1s ease-in-out;
+  background: #4F95DA;
+}
+
+button:hover svg {
+  stroke-dashoffset: -480;
+}
 
   .slogan {
     font-size: 1.7em;
@@ -86,7 +100,8 @@
   }
 
   .App-logo {
-    height: 14vmin;
+    height: 30vmin;
+    width: 30vmin;
     pointer-events: none;
     transform: scale(1);
     animation: pulse 3s infinite;

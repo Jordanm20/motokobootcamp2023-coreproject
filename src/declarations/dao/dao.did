@@ -25,5 +25,4 @@ service : {
                                 int;
                               };
                         });
-  whoami: (text) -> (text) query;
 }

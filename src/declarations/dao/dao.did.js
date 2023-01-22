@@ -25,7 +25,6 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'Ok' : IDL.Tuple(IDL.Int, IDL.Int), 'Err' : IDL.Text })],
         [],
       ),
-    'whoami' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };
