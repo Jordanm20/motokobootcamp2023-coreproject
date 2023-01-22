@@ -48,6 +48,7 @@ actor {
         };
         return false;
     };
+    
     public shared({caller}) func submit_proposal(this_payload : Text) : async {#Ok : StaticProposal; #Err : Text} {
         let nextId = proposals.size() + 1;
         switch (proposals.get(nextId)) {
