@@ -16,7 +16,11 @@
 
 {#if $principal}
   {#await promise}
-    <p>Loading...</p>
+  <div id="contenedor">
+    <div id="barra">
+      <div id="texto"></div>
+    </div>
+  </div>
   {:then proposals}
     <div id="proposals">
       <h1>Proposals</h1>
@@ -43,4 +47,87 @@
     width: 100%;
     margin-left: 10vmin;
   }
+  #barra {
+    align-self: center;
+    text-align: center;
+    align-items: center;
+    width: 0;
+    height: 100%;
+    -webkit-animation: progreso 5s linear infinite;
+            animation: progreso 5s linear infinite;
+
+    background: #eb7260;
+}
+#contenedor {
+    width: 25em;
+    height: 4em;
+    align-self: center;
+    align-items: center;
+    text-align: center;
+    border: 2px solid #eb7260;
+}
+#texto {
+    font-size: 2em;
+    font-weight: bold;
+    line-height: 2em;
+
+    width: 20px;
+    height: 20px;
+    align-self: center;
+    align-items: center;
+    text-align: center;
+    color: #eb7260;
+
+    mix-blend-mode: multiply;
+}
+
+#texto:after {
+    content: '0%';
+    -webkit-animation: porcentaje 5s linear infinite;
+            animation: porcentaje 5s linear infinite;
+}
+
+@-webkit-keyframes progreso {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes progreso {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-webkit-keyframes porcentaje {
+    0% {
+    }
+    25% {
+    }
+    50% {
+    }
+    75% {
+    }
+    100% {
+    }
+}
+
+@keyframes porcentaje {
+    0% {
+    }
+    25% {
+    }
+    50% {
+    }
+    75% {
+    }
+    100% {
+    }
+}
 </style>

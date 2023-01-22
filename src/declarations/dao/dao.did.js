@@ -1,8 +1,8 @@
 export const idlFactory = ({ IDL }) => {
   const StaticProposal = IDL.Record({
     'id' : IDL.Nat,
-    'votesA' : IDL.Int,
-    'votesF' : IDL.Int,
+    'votesAgainst' : IDL.Int,
+    'votesFor' : IDL.Int,
     'alreadyVoted' : IDL.Vec(IDL.Principal),
     'body' : IDL.Text,
   });

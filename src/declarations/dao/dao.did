@@ -3,8 +3,8 @@ type StaticProposal =
    alreadyVoted: vec principal;
    body: text;
    id: nat;
-   votesA: int;
-   votesF: int;
+   votesAgainst: int;
+   votesFor: int;
  };
 service : {
   get_all_proposals: () -> (vec record {

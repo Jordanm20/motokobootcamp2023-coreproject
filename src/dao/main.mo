@@ -23,20 +23,20 @@ actor {
     let bootcamp_token : actor { icrc1_balance_of : (Account) -> async Nat } = actor ("db3eq-6iaaa-aaaah-abz6a-cai"); 
 
 
-    public type Proposal = {
+     public type Proposal = {
         id:   Nat;
-        var votesF: Int;
-        var votesA: Int;
+        var votesFor: Int;
+        var votesAgainst: Int;
         body: Text;
-        var aVoted : [Principal];
+        var alreadyVoted : [Principal];
     };
 
     public type StaticProposal = {
         id: Nat;
-        votesF: Int;
-        votesA: Int;
+        votesFor: Int;
+        votesAgainst: Int;
         body: Text;
-        aVoted : [Principal];
+        alreadyVoted : [Principal];
     };
 
     stable var spropo : [(Nat, Proposal)] = [];
@@ -60,17 +60,17 @@ actor {
             case null {
                 let nextProposal : Proposal = {
                     id = nextId;
-                    var votesF = 0;
-                    var votesA = 0;
+                    var votesFor = 0;
+                    var votesAgainst = 0;
                     body = this_payload;
-                    var aVoted = [];
+                    var alreadyVoted = [];
                 };
                 proposals.put(nextId, nextProposal);
                 return #Ok({
                     nextProposal with
-                    votesF = nextProposal.votesF;
-                    votesA = nextProposal.votesA;
-                    aVoted = [];
+                    votesFor = nextProposal.votesFor;
+                    votesAgainst = nextProposal.votesAgainst;
+                    alreadyVoted = [];
                 })
             }
         }
@@ -93,24 +93,24 @@ actor {
             return #Err("Number of Motoko Bootcamp Tokens must be greater than 1 to vote")
         };
 
-        if (array(proposal.aVoted, caller) == true) {
+        if (array(proposal.alreadyVoted, caller) == true) {
             return #Err("No puede votar 2 veces en una misma propuesta");
         };
 
         let voting_power = tokens_owned/100000000;
 
         switch yes_or_no {
-            case true { // Vote YES
-                proposal.votesF := proposal.votesF + voting_power;
-                proposal.aVoted := Array.append(proposal.aVoted, [caller]);
-                if (proposal.votesF > 100) { 
+            case true { 
+                proposal.votesFor := proposal.votesFor + voting_power;
+                proposal.alreadyVoted := Array.append(proposal.alreadyVoted, [caller]);
+                if (proposal.votesFor > 100) { 
                     await update_site(proposal.body);
                     return #Err("La propuesta fue aprovada")  
                 };
             };
             case false { 
-                proposal.votesA := proposal.votesA + voting_power;
-                if (proposal.votesA > 100) { 
+                proposal.votesAgainst := proposal.votesAgainst + voting_power;
+                if (proposal.votesAgainst > 100) { 
                     return #Err("La propuesta fue rechazada")
                 }
             };
@@ -130,9 +130,9 @@ actor {
             case null {return null};
             case (?proposal) {
                 return ?{proposal with 
-                votesF = proposal.votesF;
-                votesA = proposal.votesA;
-                aVoted = [];
+                votesFor = proposal.votesFor;
+                votesAgainst = proposal.votesAgainst;
+                alreadyVoted = [];
                 }
             }
         }
@@ -142,9 +142,9 @@ actor {
         let a = Iter.toArray(proposals.entries());
         Array.map<(Nat, Proposal), (Nat, StaticProposal)>(a, func (e) {
             (e.0, {e.1 with 
-            votesF = e.1.votesF;
-            votesA = e.1.votesA;
-            aVoted = [];
+            votesFor = e.1.votesFor;
+            votesAgainst = e.1.votesAgainst;
+            alreadyVoted = [];
             });
         });
     };
