@@ -107,27 +107,37 @@
 
 @-webkit-keyframes porcentaje {
     0% {
+        content: '0%';
     }
     25% {
+        content: '25%';
     }
     50% {
+        content: '50%';
     }
     75% {
+        content: '75%';
     }
     100% {
+        content: '100%';
     }
 }
 
 @keyframes porcentaje {
     0% {
+        content: '0%';
     }
     25% {
+        content: '25%';
     }
     50% {
+        content: '50%';
     }
     75% {
+        content: '75%';
     }
     100% {
+        content: '100%';
     }
 }
 </style>
