@@ -2,13 +2,11 @@
   import Proposal from "./Proposal.svelte"
   import { get } from "svelte/store"
   import { daoActor, principal } from "../stores"
-
   async function get_all_proposals() {
     let dao = get(daoActor);
     if (!dao) {
       return
     }
-    console.log("Principal", principal)
     let res = await dao.get_all_proposals()
     console.log("Proposals", res)
     return res
@@ -30,7 +28,7 @@
     <p style="color: red">{error.message}</p>
   {/await}
 {:else}
-  <p class="example-disabled">Connect with a wallet to access this example</p>
+  <p class="example-disabled" style="color: black">Connect with plug wallet to access this example, we only support plug wallet</p>
 {/if}
 
 <style>
@@ -39,7 +37,6 @@
     font-size: 10vmin;
     font-weight: 700;
   }
-
   #proposals {
     display: flex;
     flex-direction: column;

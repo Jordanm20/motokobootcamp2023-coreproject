@@ -4,16 +4,17 @@
   import mot from "../assets/mot.png"
   import { get } from "svelte/store"
   import { daoActor, principal } from "../stores"
-
+  import { dao } from "../../src/declarations/dao/index.js"
+  console.log($daoActor)
+  console.log(daoActor)
   let choosenproposal = ""
   let choosenvote = ""
   let voteid = ""
   let id = ""
-
   async function vote(thisid, votepayload) {
     let dao = get(daoActor)
     if (!dao) {
-      return 
+      return
     }
     let res = await dao.vote(BigInt(thisid), votepayload)
     if (res.Ok) {
@@ -25,7 +26,7 @@
   async function get_proposal(thisid) {
     let dao = get(daoActor)
     if (!dao) {
-      return 
+      return
     }
     let res = await dao.get_proposal(BigInt(thisid))
     if (res.length !== 0) {
@@ -36,22 +37,26 @@
       )
     }
   }
-
+  console.log("vote.svelte")
+  async function gettokensowned() {
+    let dao = get(daoActor)
+    console.log(dao)
+    let result = await dao.get_tokens()
+    return result
+  }
+  let get_tokens_owned_promise = gettokensowned()
   let promise = vote(voteid, choosenvote)
   let promise2 = get_proposal(id)
-
   function handleVoteClick(payload) {
     choosenvote = payload
     voteid = id
     promise = vote(voteid, choosenvote)
     $hasvoted = true
   }
-
   function handleProposalCheck(payload) {
     id = payload
     promise2 = get_proposal(id)
   }
-
   //I assume the vote Yes/No will be represented as True/False
   function setProposal(x) {
     $proposaltoVote.proposalID = x
@@ -85,9 +90,9 @@
             <button on:click={() => handleVoteClick(false)}>No</button>
             {#if $hasvoted === true}
               {#await promise}
-                <h1 class="slogan">Loading...</h1>
+                <h1 class="slogan"  style="color: black">Loading...</h1>
               {:then res2}
-                <p style="color: white">
+                <p style="color: black">
                   Voted successfully! Current votes: {res2}
                 </p>
               {:catch error}
@@ -107,7 +112,9 @@
       {/await}
     {/if}
   {:else}
-    <p class="example-disabled">Connect with a wallet to access this example</p>
+    <p class="example-disabled" style="color: black">
+      Connect with plug wallet to access this example
+    </p>
   {/if}
 </div>
 
@@ -121,7 +128,6 @@
     border-radius: 4px;
     box-sizing: border-box;
   }
-
   .bg {
     height: 55vmin;
     animation: pulse 3s infinite;
@@ -132,13 +138,11 @@
     align-items: center;
     margin-bottom: 5vmin;
   }
-
   .votemain {
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-
   button {
     background-color: #4caf50;
     border: none;
@@ -150,9 +154,5 @@
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
-  }
-
-  .delete {
-    background-color: white;
   }
 </style>

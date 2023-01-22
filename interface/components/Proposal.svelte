@@ -1,30 +1,21 @@
 <script>
   export let post
+  let [id, proposal] = post;
 </script>
 
 <div class="post-preview">
-  <h2>{post[0]}</h2>
-  <p>{post[1].creator.owner.toString()}</p>
-  <p>Change website text to: {post[1].payload}</p>
-  <p>
-    Yes: {(post[1].votes[0] / BigInt(100000000)).toString()}, No: {(
-      post[1].votes[1] / BigInt(100000000)
-    ).toString()}
-  </p>
+  <h3>{proposal['id']}:</h3>
+  <p>Change website text to: {proposal['body']}</p>
+  <p>Yes: {proposal['votesFor']}</p>
+  <p>No:  {proposal['votesAgainst']}</p>
+  <hr />
+
 </div>
 
 <style>
   .post-preview {
-    border: 1px solid white;
+    border: 1px green;
     border-radius: 10px;
-    margin-bottom: 2vmin;
-    padding: 2vmin;
-  }
-  h2 {
-    color: white;
-  }
-
-  p {
-    color: white;
+    margin-bottom: 8vmin;
   }
 </style>

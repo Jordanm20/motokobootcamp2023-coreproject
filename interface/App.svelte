@@ -27,7 +27,7 @@
 
   <footer>
     <p class="twitterfoot">
-      by <a href="https://twitter.com/iriasviel">Iri</a>
+      by <a>Student: Jordan Miranda</a>
     </p>
   </footer>
 </div>
@@ -41,7 +41,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #424242;
-    background-color: #262626;
+    background-color:white;
   }
   .styling {
     width: 5vmin;
@@ -53,18 +53,22 @@
 
   button {
     font-weight: 600;
-    background-color: #4c4a4a;
+    color: black;
+    border-radius: 3px;
+    border-color: black;
+    background: -moz-linear-gradient(white,gray,white);
+    background: -webkit-linear-gradient(white,gray,white);
   }
 
   .slogan {
     font-size: 1.7em;
     margin-bottom: 0;
-    color: #ffffff;
+    color: black;
   }
 
   .twitter {
     font-size: 0.4em;
-    color: #ffffff;
+    color:black;
   }
 
   a {
@@ -73,7 +77,7 @@
 
   .twitterfoot {
     position: fixed;
-    color: #ffffff;
+    color: black;
     bottom: 0;
     right: 0;
     margin-right: 2vmin;
@@ -91,6 +95,7 @@
   footer {
     position: fixed;
     bottom: 0;
+    color: black;
   }
   .footerimg {
     position: fixed;

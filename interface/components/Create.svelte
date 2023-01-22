@@ -3,9 +3,7 @@
   import { get } from "svelte/store"
   import mot from "../assets/mot.png"
   let choosenproposal = "Input your proposal"
-
   let summary
-
   async function create_proposal(summarypayload) {
     let dao = get(daoActor)
     if (!dao) {
@@ -18,9 +16,7 @@
       throw new Error(res.Err)
     }
   }
-
   let promise = create_proposal(summary)
-
   function handleCreateClick(payload) {
     summary = payload
     promise = create_proposal(summary)
@@ -37,14 +33,14 @@
     />
     <button on:click={handleCreateClick(choosenproposal)}>Create!</button>
     {#await promise}
-      <p style="color: white">...waiting</p>
+      <p style="color: black">...waiting</p>
     {:then proposal}
-      <p style="color: white">Proposal created with payload {proposal}</p>
+      <p style="color: black">Proposal created with payload {proposal}</p>
     {:catch error}
       <p style="color: red">{error.message}</p>
     {/await}
   {:else}
-    <p class="example-disabled">Connect with a wallet to access this example</p>
+    <p class="example-disabled" style="color: black">Connect with a wallet to access this example</p>
   {/if}
 </div>
 
@@ -58,21 +54,18 @@
     border-radius: 4px;
     box-sizing: border-box;
   }
-
   .bg {
     height: 55vmin;
     animation: pulse 3s infinite;
   }
-
   .votemain {
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-
   button {
     background-color: #4caf50;
-    border: none;
+    border-radius: 3px;
     color: white;
     padding: 15px 32px;
     text-align: center;

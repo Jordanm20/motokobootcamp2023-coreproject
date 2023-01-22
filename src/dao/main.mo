@@ -1,103 +1,167 @@
-import Trie "mo:base/Trie";
 import Principal "mo:base/Principal";
-import Option "mo:base/Option";
-import Iter "mo:base/Iter";
-import Int "mo:base/Int";
-import Nat "mo:base/Nat";
-import Result "mo:base/Result";
-import Error "mo:base/Error";
-import List "mo:base/List";
-import Time "mo:base/Time";
-import Int16 "mo:base/Int16";
-import Nat16 "mo:base/Nat16";
 import Text "mo:base/Text";
-import Hash "mo:base/Hash";
+import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
-import Buffer "mo:base/Buffer";
+import Iter "mo:base/Iter";
+import Nat "mo:base/Nat";
+import Hash "mo:base/Hash";
+import Prelude "mo:base/Prelude";
+import Array "mo:base/Array";
+import Debug "mo:base/Debug";
+import Cycles "mo:base/ExperimentalCycles";
+import Error "mo:base/Error";
 
 
+actor {
+
+    public type Proposal = {
+        id:   Nat;
+        var votesFor: Int;
+        var votesAgainst: Int;
+        body: Text;
+        var alreadyVoted : [Principal];
+    };
+
+    public type StaticProposal = {
+        id: Nat;
+        votesFor: Int;
+        votesAgainst: Int;
+        body: Text;
+        alreadyVoted : [Principal];
+    };
+
+    stable var stableproposals : [(Nat, Proposal)] = [];
+    let proposals = HashMap.fromIter<Nat, Proposal>(
+        stableproposals.vals(), 10, Nat.equal, Hash.hash
+    );
 
 
- actor {
-    //My discord is: iri#1598
-    stable var next_proposal_id : Nat = 1;
-    
-    type Proposal = {
-        caller:Principal;
-        this_payload:Text;
-        votes:{
-            si:Nat;
-            no:Nat;
+    // 
+    public shared query (msg) func whoami(t : Text) : async Text {
+        Principal.toText(msg.caller) # "" # t;
+    };
+
+
+    func arrayContainsPrincipal(a : [Principal], p : Principal) : Bool {
+        for (e in a.vals()) {
+            if (e == p) {return true};
+        };
+        return false;
+    };
+
+
+   
+    public shared({caller}) func submit_proposal(this_payload : Text) : async {#Ok : StaticProposal; #Err : Text} {
+        let nextId = proposals.size() + 1;
+        switch (proposals.get(nextId)) {
+            case (?id) {
+                return #Err("Error");
+            };
+            case null {
+                let nextProposal : Proposal = {
+                    id = nextId;
+                    var votesFor = 0;
+                    var votesAgainst = 0;
+                    body = this_payload;
+                    var alreadyVoted = [];
+                };
+                proposals.put(nextId, nextProposal);
+                return #Ok({
+                    nextProposal with
+                    votesFor = nextProposal.votesFor;
+                    votesAgainst = nextProposal.votesAgainst;
+                    alreadyVoted = [];
+                })
+            }
         }
-    };// TO DEFINE;
-    stable var a_proposal:[(Nat,Proposal)]=[];
-    var propuestas= HashMap.fromIter<Nat,Proposal>(a_proposal.vals(),1,Nat.equal,Hash.hash);
-
-    public shared({caller}) func submit_proposal(this_payload : Text) : async {#Ok : Proposal; #Err : Text} {
-        if(this_payload==""){
-            return #Err("Por favor, ingresa una propuesta");
-        };
-        var proposal_id = next_proposal_id;
-        next_proposal_id += 1;
-        let votes={
-            si = 0;
-            no = 0;
-        };
-        let nueva_prop={caller ; this_payload; votes};
-        propuestas.put(proposal_id,nueva_prop);
-        return #Ok nueva_prop;
     };
-    public shared({caller}) func vote(proposal_id : Int, yes_or_no : Bool) : async {#Ok : {si: Nat; no: Nat}; #Err : Text} {
-        var vain16:Int16=0;
-        var vana16:Nat16=0;
-        var vana:Nat=0;
-        vain16:=Int16.fromInt(proposal_id);
-        vana16:=Int16.toNat16(vain16);
-        vana:=Nat16.toNat(vana16);
-        var proid=propuestas.get(vana);
-        switch(propuestas.get(vana)){
-            case(null){
-                return #Err ("Id invalido, propuesta no encontrada, pruebe con otro Id");
-            };
-            case(?proid){
-                var totalSi=proid.votes.si;
-                var totalNo=proid.votes.no;
-                if(yes_or_no){
-                    totalSi+=1;
-                }else{
-                    totalNo+=1;
-                };
-                let actualizador:Proposal={
-                    caller=proid.caller;
-                    this_payload = proid.this_payload;
-                    votes = {
-                            si = totalSi;
-                            no = totalNo;
-                        }
-                };
-                propuestas.put(vana,actualizador);
-                 return #Ok (actualizador.votes);
 
 
-            };
+    type Subaccount = Blob;
+    type Account = { 
+        owner : Principal;
+        subaccount : ?Subaccount;
+    };
+    let bootcamp_token : actor { icrc1_balance_of : (Account) -> async Nat } = actor ("db3eq-6iaaa-aaaah-abz6a-cai"); 
 
+
+    public shared({caller}) func get_tokens() : async Nat {
+        let tokens_owned = await bootcamp_token.icrc1_balance_of({ owner = caller; subaccount = null; });
+        return tokens_owned/100000000;
+    };
+
+
+    public shared({caller}) func vote(proposal_id : Nat, yes_or_no : Bool) : async {#Ok : (Int, Int); #Err : Text} {
+        let proposal = switch (proposals.get(proposal_id)) {
+            case null {return #Err("Error: Propuesta no existene");};
+            case (?p) {p};
         };
-          };
-    public query func get_proposal(id : Int) : async ?Proposal {
-        var vain16:Int16=0;
-        var vana16:Nat16=0;
-        var vana:Nat=0;
-        vain16:=Int16.fromInt(id);
-        vana16:=Int16.toNat16(vain16);
-        vana:=Nat16.toNat(vana16);
-        propuestas.get(vana);
+
+        let tokens_owned = await bootcamp_token.icrc1_balance_of({ owner = caller; subaccount = null; });
+        if (not (tokens_owned > 1)) {
+            return #Err("Number of Motoko Bootcamp Tokens must be greater than 1 to vote")
+        };
+
+        if (arrayContainsPrincipal(proposal.alreadyVoted, caller) == true) {
+            return #Err("No puede votar 2 veces en una misma propuesta");
+        };
+
+        let voting_power = tokens_owned/100000000;
+
+        switch yes_or_no {
+            case true { // Vote YES
+                proposal.votesFor := proposal.votesFor + voting_power;
+                proposal.alreadyVoted := Array.append(proposal.alreadyVoted, [caller]);
+                if (proposal.votesFor > 100) { 
+                    await update_site(proposal.body);
+                    return #Err("La propuesta fue aprovada")  
+                };
+            };
+            case false { 
+                proposal.votesAgainst := proposal.votesAgainst + voting_power;
+                if (proposal.votesAgainst > 100) { 
+                    return #Err("La propuesta fue rechazada")
+                }
+            };
+        };
+        Prelude.unreachable()
     };
     
-    public query func get_all_proposals() : async [(Int, Proposal)] {
-        var prop = Buffer.Buffer<(Int, Proposal)>(0);
-        for (i in propuestas.entries()){
-            prop.add(i);
-        };
-        return Buffer.toArray(prop);
+    
+    let receiver : actor { receive_message : (Text) -> async Nat } = actor ("x6rkz-tyaaa-aaaak-qbuxq-cai"); 
+
+    public func update_site(message : Text) : async () {
+        let size = await receiver.receive_message(message);
     };
-}
+
+    public query func get_proposal(id : Nat) : async ?StaticProposal {
+        switch (proposals.get(id)) {
+            case null {return null};
+            case (?proposal) {
+                return ?{proposal with 
+                votesFor = proposal.votesFor;
+                votesAgainst = proposal.votesAgainst;
+                alreadyVoted = [];
+                }
+            }
+        }
+
+    };
+    
+    public query func get_all_proposals() : async [(Nat, StaticProposal)] {
+        let a = Iter.toArray(proposals.entries());
+        Array.map<(Nat, Proposal), (Nat, StaticProposal)>(a, func (e) {
+            (e.0, {e.1 with 
+            votesFor = e.1.votesFor;
+            votesAgainst = e.1.votesAgainst;
+            alreadyVoted = [];
+            });
+        });
+    };
+    system func preupgrade() {
+        stableproposals := Iter.toArray(proposals.entries());
+    };
+    system func postupgrade() {
+        stableproposals := [];
+    };
+};

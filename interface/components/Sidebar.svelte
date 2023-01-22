@@ -35,7 +35,7 @@
 <style>
   nav {
     min-height: 100vh;
-    background-color: #262626;
+    background-color: white;
     color: #a2b7c4;
     transition: ease-out 200ms;
     width: 13vmin;
@@ -46,7 +46,7 @@
     transition: ease-out 200ms;
     min-height: 100vh;
     background-color: #4c4a4a;
-    color: #ffffff;
+    color:white;
     transition: ease-out 200ms;
     width: 16vmin;
   }

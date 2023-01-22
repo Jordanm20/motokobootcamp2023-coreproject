@@ -1,39 +1,29 @@
-type Subaccount = vec nat8;
-type Proposal = 
+type StaticProposal = 
  record {
-   creator: Account;
-   payload: text;
-   status: variant {
-             Open;
-             Passed;
-             Rejected;
-           };
-   timestamp: int;
-   votes: record {
-            nat;
-            nat;
-          };
- };
-type Account = 
- record {
-   owner: principal;
-   subaccount: opt Subaccount;
+   alreadyVoted: vec principal;
+   body: text;
+   id: nat;
+   votesAgainst: int;
+   votesFor: int;
  };
 service : {
   get_all_proposals: () -> (vec record {
-                                  int;
-                                  Proposal;
+                                  nat;
+                                  StaticProposal;
                                 }) query;
-  get_proposal: (int) -> (opt Proposal) query;
+  get_proposal: (nat) -> (opt StaticProposal) query;
+  get_tokens: () -> (nat);
   submit_proposal: (text) -> (variant {
                                 Err: text;
-                                Ok: Proposal;
+                                Ok: StaticProposal;
                               });
-  vote: (int, bool) -> (variant {
+  update_site: (text) -> ();
+  vote: (nat, bool) -> (variant {
                           Err: text;
                           Ok: record {
-                                nat;
-                                nat;
+                                int;
+                                int;
                               };
                         });
+  whoami: (text) -> (text) query;
 }
