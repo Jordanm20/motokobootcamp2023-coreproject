@@ -13,21 +13,28 @@ import Error "mo:base/Error";
 
 
 actor {
+       type Subaccount = Blob;
+    type Account = { 
+        owner : Principal;
+        subaccount : ?Subaccount;
+    };
+    let bootcamp_token : actor { icrc1_balance_of : (Account) -> async Nat } = actor ("db3eq-6iaaa-aaaah-abz6a-cai"); 
+
 
     public type Proposal = {
         id:   Nat;
-        var votesFor: Int;
-        var votesAgainst: Int;
+        var votesF: Int;
+        var votesA: Int;
         body: Text;
-        var alreadyVoted : [Principal];
+        var aVoted : [Principal];
     };
 
     public type StaticProposal = {
         id: Nat;
-        votesFor: Int;
-        votesAgainst: Int;
+        votesF: Int;
+        votesA: Int;
         body: Text;
-        alreadyVoted : [Principal];
+        aVoted : [Principal];
     };
 
     stable var spropo : [(Nat, Proposal)] = [];
@@ -50,31 +57,22 @@ actor {
             case null {
                 let nextProposal : Proposal = {
                     id = nextId;
-                    var votesFor = 0;
-                    var votesAgainst = 0;
+                    var votesF = 0;
+                    var votesA = 0;
                     body = this_payload;
-                    var alreadyVoted = [];
+                    var aVoted = [];
                 };
                 proposals.put(nextId, nextProposal);
                 return #Ok({
                     nextProposal with
-                    votesFor = nextProposal.votesFor;
-                    votesAgainst = nextProposal.votesAgainst;
-                    alreadyVoted = [];
+                    votesF = nextProposal.votesF;
+                    votesA = nextProposal.votesA;
+                    aVoted = [];
                 })
             }
         }
     };
-
-
-    type Subaccount = Blob;
-    type Account = { 
-        owner : Principal;
-        subaccount : ?Subaccount;
-    };
-    let bootcamp_token : actor { icrc1_balance_of : (Account) -> async Nat } = actor ("db3eq-6iaaa-aaaah-abz6a-cai"); 
-
-
+ 
     public shared({caller}) func get_tokens() : async Nat {
         let tokens_owned = await bootcamp_token.icrc1_balance_of({ owner = caller; subaccount = null; });
         return tokens_owned/100000000;
@@ -92,7 +90,7 @@ actor {
             return #Err("Number of Motoko Bootcamp Tokens must be greater than 1 to vote")
         };
 
-        if (array(proposal.alreadyVoted, caller) == true) {
+        if (array(proposal.aVoted, caller) == true) {
             return #Err("No puede votar 2 veces en una misma propuesta");
         };
 
@@ -100,16 +98,16 @@ actor {
 
         switch yes_or_no {
             case true { // Vote YES
-                proposal.votesFor := proposal.votesFor + voting_power;
-                proposal.alreadyVoted := Array.append(proposal.alreadyVoted, [caller]);
-                if (proposal.votesFor > 100) { 
+                proposal.votesF := proposal.votesF + voting_power;
+                proposal.aVoted := Array.append(proposal.aVoted, [caller]);
+                if (proposal.votesF > 100) { 
                     await update_site(proposal.body);
                     return #Err("La propuesta fue aprovada")  
                 };
             };
             case false { 
-                proposal.votesAgainst := proposal.votesAgainst + voting_power;
-                if (proposal.votesAgainst > 100) { 
+                proposal.votesA := proposal.votesA + voting_power;
+                if (proposal.votesA > 100) { 
                     return #Err("La propuesta fue rechazada")
                 }
             };
@@ -129,22 +127,21 @@ actor {
             case null {return null};
             case (?proposal) {
                 return ?{proposal with 
-                votesFor = proposal.votesFor;
-                votesAgainst = proposal.votesAgainst;
-                alreadyVoted = [];
+                votesF = proposal.votesF;
+                votesA = proposal.votesA;
+                aVoted = [];
                 }
             }
         }
 
     };
-    
     public query func get_all_proposals() : async [(Nat, StaticProposal)] {
         let a = Iter.toArray(proposals.entries());
         Array.map<(Nat, Proposal), (Nat, StaticProposal)>(a, func (e) {
             (e.0, {e.1 with 
-            votesFor = e.1.votesFor;
-            votesAgainst = e.1.votesAgainst;
-            alreadyVoted = [];
+            votesF = e.1.votesF;
+            votesA = e.1.votesA;
+            aVoted = [];
             });
         });
     };

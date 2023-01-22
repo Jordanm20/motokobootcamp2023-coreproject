@@ -3,8 +3,8 @@ import type { ActorMethod } from '@dfinity/agent';
 
 export interface StaticProposal {
   'id' : bigint,
-  'votesAgainst' : bigint,
-  'votesFor' : bigint,
+  'votesA' : bigint,
+  'votesF' : bigint,
   'alreadyVoted' : Array<Principal>,
   'body' : string,
 }
