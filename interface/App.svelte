@@ -52,8 +52,6 @@
   }
 
   button {
-    margin-top: 20px;
-    margin-bottom: 20px;
     margin-left: 20px;
     font-weight: 600;
     color: black;
