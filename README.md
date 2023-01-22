@@ -31,8 +31,7 @@ dfx deploy
 ## Live demo
 There are 2 versions of this app deployed on the IC:
 
-- This example (without the backend completed so any request will fail): https://raisq-jyaaa-aaaaj-qazrq-cai.ic0.app/
-- Completed version (with the backend completed): https://xmfll-uyaaa-aaaah-ab2ja-cai.ic0.app/ 
+- Completed version (with the backend completed): https://vdmer-aqaaa-aaaak-qbuya-cai.ic0.app/
 
 ## Common errors
 - When using Plug wallet you might encounter the following: "Uncaught (in promise) Error: There isn't enough space to open the popup" - if that's the case make sure to reduce your browser windows and give some space for the popup windows to appear.
