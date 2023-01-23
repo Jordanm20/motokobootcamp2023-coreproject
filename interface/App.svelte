@@ -27,7 +27,7 @@
 
   <footer>
     <p class="twitterfoot">
-    <a>Student: Jordan Miranda</a>
+    <a>Student: Jordan</a>
     </p>
   </footer>
 </div>
