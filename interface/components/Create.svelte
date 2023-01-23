@@ -38,7 +38,6 @@
       <div id="texto"></div>
     </div>
   </div>
-
     {:then proposal}
       <p style="color: black">Proposal created with payload {proposal}</p>
     {:catch error}

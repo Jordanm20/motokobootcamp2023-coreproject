@@ -105,7 +105,7 @@ actor {
                 proposal.alreadyVoted := Array.append(proposal.alreadyVoted, [caller]);
                 if (proposal.votesFor > 100) { 
                     await update_site(proposal.body);
-                    return #Err("La propuesta fue aprovada")  
+                    return #Err("La propuesta fue aprobada")  
                 };
             };
             case false { 

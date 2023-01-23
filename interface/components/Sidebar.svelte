@@ -36,11 +36,12 @@
   nav {
     min-height: 100vh;
     background-color: white;
-    color: #a2b7c4;
+    color: black;
     transition: ease-out 200ms;
     width: 13vmin;
     position: relative;
   }
+
 
   .expanded {
     transition: ease-out 200ms;
@@ -48,19 +49,24 @@
     background-color: #4c4a4a;
     color:white;
     transition: ease-out 200ms;
-    width: 16vmin;
+    width: 30vmin;
   }
 
   ul {
+    margin-top: 400px;
     list-style: none;
     padding-left: 1vmin;
     padding-right: 1vmin;
     margin: 0;
-    margin-top: 2vmin;
   }
 
   li {
+    margin-top: 90px;
+    transform: translateX(-25px);
+    text-align: center;
     width: 100%;
+    border-bottom: 2px solid white;
+
     padding-top: 2vmin;
     padding-bottom: 2vmin;
     display: flex;

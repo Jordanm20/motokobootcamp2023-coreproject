@@ -6,16 +6,19 @@
 <div class="post-preview">
   <h3>{proposal['id']}:</h3>
   <p>Change website text to: {proposal['body']}</p>
-  <p>Yes: {proposal['votesFor']}</p>
-  <p>No:  {proposal['votesAgainst']}</p>
-  <hr />
+  <p>Yes 👍: {proposal['votesFor']}</p>
+  <p>No 👎:  {proposal['votesAgainst']}</p>
 
 </div>
 
 <style>
   .post-preview {
-    border: 1px green;
+    width: 75%;
+    color: white;
+    background-color: gray;
     border-radius: 10px;
-    margin-bottom: 8vmin;
+    margin-top: 0px;
+    margin-bottom: 4vmin;
+    transform: translateY(-120px);
   }
 </style>
